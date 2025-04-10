@@ -1,28 +1,25 @@
-from pymongo import MongoClient
+import pymongo
 from datetime import datetime
 
 
-def test_database():
+client = pymongo.MongoClient("mongodb://localhost:27017/")
 
-    client = MongoClient("mongodb://localhost:27017/")
-    db = client["dog_feeder"]
-
-    detections = db["detections"]
-
-    sample_detection = {
-        "timestamp": datetime.utcnow(),
-        "image": "sample_image.jpg",
-        "result": "human",
-        "confidence": 0.95,
-    }
-
-    result = detections.insert_one(sample_detection)
-    print("Uploaded document with id:", result.inserted_id)
-
-    retrieved = detections.find_one({"id": result.inserted_id})
-    print("Retrieved document:")
-    print(retrieved)
+db = client["feeder_db"]
+collection = db["detections"]
 
 
-if __name__ == "__main__":
-    test_database()
+sample_doc = {
+    "timestamp": datetime.utcnow(),
+    "image": "images/test_image.jpg",
+    "result": "dog",
+    "confidence": 0.92,
+    "sensor_info": {
+        "device": "webcam",
+        "location": "front_door"
+    },
+    "processing_time": 1.23
+}
+
+
+inserted_id = collection.insert_one(sample_doc).inserted_id
+print(f"Inserted document with _id: {inserted_id}")
