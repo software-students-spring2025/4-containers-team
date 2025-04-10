@@ -5,12 +5,15 @@ Run using:
 
 import argparse
 
+from datetime import datetime
+
 import torch
 import torchvision
 from PIL import Image, ImageDraw
 from torchvision.models.detection import FasterRCNN_ResNet50_FPN_Weights
 from torchvision.transforms import functional as F
 
+from database.db import insert_detection
 
 #take in arguments from terminal
 parser = argparse.ArgumentParser()
@@ -67,3 +70,26 @@ image_with_boxes = draw_bounding_boxes(
 OUTPUT_PATH = "output_detected.jpg"
 image_with_boxes.save(OUTPUT_PATH)
 print(f"Detection result saved to {OUTPUT_PATH}")
+
+
+for i, score in enumerate(scores):
+    
+    if score >= args.threshold:
+
+        detection_result = {
+            "timestamp": datetime.utcnow(),
+            "image": args.image,
+            "result": labels[i],
+            "confidence": float(score),
+            "sensor_info": {
+                "device": "webcam",
+                "location": "front_door"
+            },
+            "processing_time": 1.23 
+        }
+ 
+        inserted_id = insert_detection(detection_result)
+        print(f" Inserted result into MongoDB with _id: {inserted_id}")
+        break
+else:
+    print("No detection passed the threshold.")
