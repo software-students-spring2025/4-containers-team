@@ -1,14 +1,10 @@
 name: Python CI
 
-
-
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
-
 
 jobs:
   test:
@@ -35,4 +31,3 @@ jobs:
     - name: Run tests with pytest
       run: |
         pytest machine-learning-client/main_test.py
-

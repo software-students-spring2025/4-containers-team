@@ -1,0 +1,6 @@
+flask
+pymongo
+pytest
+pytest-flask
+Pillow
+numpy
