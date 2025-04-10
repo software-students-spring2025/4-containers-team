@@ -3,13 +3,22 @@ Run using:
     python3 main.py --image 1.jpg
 """
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import argparse
+mlCLientDBLogic
+
+from datetime import datetime
+
 import torch
 import torchvision
 from PIL import Image, ImageDraw
 from torchvision.models.detection import FasterRCNN_ResNet50_FPN_Weights
 from torchvision.transforms import functional as F
 
+from database.db import insert_detection
 
 def load_image(image_path):
     """Load image"""
@@ -68,5 +77,34 @@ def main():
     print(f"Detection result saved to {output_path}")
 
 
+mlCLientDBLogic
+#output result
+OUTPUT_PATH = "output_detected.jpg"
+image_with_boxes.save(OUTPUT_PATH)
+print(f"Detection result saved to {OUTPUT_PATH}")
+
+
+for i, score in enumerate(scores):
+
+    if score >= args.threshold:
+
+        detection_result = {
+            "timestamp": datetime.utcnow(),
+            "image": args.image,
+            "result": labels[i],
+            "confidence": float(score),
+            "sensor_info": {
+                "device": "webcam",
+                "location": "front_door"
+            },
+            "processing_time": 1.23 
+        }
+ 
+        inserted_id = insert_detection(detection_result)
+        print(f" Inserted result into MongoDB with _id: {inserted_id}")
+        break
+else:
+    print("No detection passed the threshold.")
 if __name__ == "__main__":
     main()
+
