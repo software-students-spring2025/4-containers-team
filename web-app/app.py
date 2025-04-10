@@ -5,7 +5,6 @@ from datetime import datetime
 from flask import Flask, request, render_template, jsonify
 from pymongo import MongoClient
 from PIL import Image
-import cv2
 import numpy as np
 
 # Later we'll import detect_human from ml_utils
@@ -35,13 +34,13 @@ def detect():
         image_data = base64.b64decode(encoded)
         image = Image.open(io.BytesIO(image_data)).convert("RGB")
 
-        # Convert PIL to OpenCV format
-        frame = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+        # Convert PIL to NumPy array (no OpenCV)
+        frame = np.array(image)  # stays in RGB
 
-        # Replace this with your real model call later
+        # Call the dummy model (replace with real YOLO later)
         is_human, label, confidence = dummy_detect_human(frame)
 
-        # Save image as base64 to MongoDB
+        # Save image and detection result to MongoDB
         image_base64 = encoded
         result = {
             "label": label,
