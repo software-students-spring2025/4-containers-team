@@ -15,13 +15,14 @@ jobs:
         with:
           python-version: "3.10" # update version(s) as needed
       - name: Install dependencies
+
         if: ${{ hashFiles(format('{0}/**/*.py', matrix.subdir)) != '' }}
-        run: |
-          cd ${{ matrix.subdir }}
-          python -m pip install --upgrade pip
-          python -m pip install pipenv
-          pipenv sync --dev --python $(which python)
-          pipenv shell --fancy --python $(which python)
+ 	 run: |
+   	 cd ${{ matrix.subdir }}
+    	python -m pip install --upgrade pip
+    	python -m pip install pipenv
+  	pipenv --python $(which python)
+    	pipenv install torch torchvision pillow pytz python-dateutil build requests gitcommitlogger
       - name: Lint with pylint
         if: ${{ hashFiles(format('{0}/**/*.py', matrix.subdir)) != '' }}
         # you may set pylint to ignore any files or dependencies that make no sense to lint
