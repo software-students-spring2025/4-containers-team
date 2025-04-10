@@ -3,6 +3,10 @@ Run using:
     python3 testing.py --image 1.jpg
 """
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import argparse
 
 from datetime import datetime
@@ -73,7 +77,7 @@ print(f"Detection result saved to {OUTPUT_PATH}")
 
 
 for i, score in enumerate(scores):
-    
+
     if score >= args.threshold:
 
         detection_result = {
