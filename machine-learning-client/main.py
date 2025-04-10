@@ -30,6 +30,7 @@ def draw_bounding_boxes(img, det_boxes, det_labels, det_scores, threshold=0.5):
 
 
 def main():
+    """Main entry point for object detection script."""
     # Take in arguments from terminal
     parser = argparse.ArgumentParser()
     parser.add_argument('--image', type=str, required=True,
@@ -68,5 +69,5 @@ def main():
 
 
 if __name__ == "__main__":
-    '''function'''
     main()
+
