@@ -1,10 +1,14 @@
 name: Python CI
 
+
+
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
+
 
 jobs:
   test:
@@ -26,9 +30,9 @@ jobs:
 
     - name: Lint with pylint
       run: |
-        pylint main.py main_test.py
+        pylint machine-learning-client/main.py machine-learning-client/main_test.py
 
     - name: Run tests with pytest
       run: |
-        pytest main_test.py
+        pytest machine-learning-client/main_test.py
 
