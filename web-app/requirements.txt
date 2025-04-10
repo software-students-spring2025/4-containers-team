@@ -3,4 +3,4 @@ pymongo
 pytest
 pytest-flask
 Pillow
-opencv-python
+numpy
