@@ -62,10 +62,11 @@ def main():
         input_image.copy(), boxes, labels, scores, args.threshold)
 
     # Output result
-    OUTPUT_PATH = "output_detected.jpg"
-    image_with_boxes.save(OUTPUT_PATH)
-    print(f"Detection result saved to {OUTPUT_PATH}")
+    output_path = "output_detected.jpg"
+    image_with_boxes.save(output_path)
+    print(f"Detection result saved to {output_path}")
 
 
 if __name__ == "__main__":
+    '''function'''
     main()
