@@ -35,6 +35,9 @@ jobs:
           pipenv install build
           pipenv install requests
           pipenv install gitcommitlogger
+	  pipenv install torch
+	  pipenv install torchvision
+	  pipenv install pillow
       - name: Log pull request opened
         if: github.event_name == 'pull_request' && github.event.action == 'opened'
         run: |
