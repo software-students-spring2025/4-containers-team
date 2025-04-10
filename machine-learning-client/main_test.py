@@ -4,9 +4,11 @@
 
 import pytest
 from PIL import Image
-import torch
+import torch  # PyTorch dynamic attributes cause linting false positives
 
+# pylint: disable=no-member
 from main import load_image, draw_bounding_boxes
+
 
 
 # pylint: disable=redefined-outer-name
