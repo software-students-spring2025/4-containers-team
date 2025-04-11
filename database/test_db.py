@@ -9,15 +9,11 @@ collection = db["detections"]
 
 
 sample_doc = {
+    
     "timestamp": datetime.utcnow(),
     "image": "images/test_image.jpg",
     "result": "dog",
     "confidence": 0.92,
-    "sensor_info": {
-        "device": "webcam",
-        "location": "front_door"
-    },
-    "processing_time": 1.23
 }
 
 
