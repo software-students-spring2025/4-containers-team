@@ -5,12 +5,15 @@ Run using:
 
 import sys
 import os
+import argparse
+from datetime import datetime
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import argparse
-mlCLientDBLogic
 
-from datetime import datetime
+
+
+
 
 import torch
 import torchvision
@@ -103,4 +106,3 @@ else:
     print("No detection passed the threshold.")
 if __name__ == "__main__":
     main()
-
