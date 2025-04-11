@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-04-10T16:30:00Z",
+  "image": "path/to/image.jpg",
+  "result": "dog",
+  "confidence": 0.92,
+  "sensor_info": {
+      "device": "webcam",
+      "location": "front_door"
+  },
+  "processing_time": 1.23
+}

@@ -1,6 +1,6 @@
 """ResNet object detection model.
 Run using:
-    python3 testing.py --image 1.jpg
+    python3 main.py --image 1.jpg
 """
 
 import sys
@@ -8,6 +8,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import argparse
+mlCLientDBLogic
 
 from datetime import datetime
 
@@ -18,15 +19,6 @@ from torchvision.models.detection import FasterRCNN_ResNet50_FPN_Weights
 from torchvision.transforms import functional as F
 
 from database.db import insert_detection
-
-#take in arguments from terminal
-parser = argparse.ArgumentParser()
-parser.add_argument('--image', type=str, required=True,
-                    help="Path to the image")
-parser.add_argument('--threshold', type=float, default=0.5,
-                    help="Detection confidence")
-args = parser.parse_args()
-
 
 def load_image(image_path):
     """Load image"""
@@ -46,30 +38,46 @@ def draw_bounding_boxes(img, det_boxes, det_labels, det_scores, threshold=0.5):
     return img
 
 
+def main():
+    """Main entry point for object detection script."""
+    # Take in arguments from terminal
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--image', type=str, required=True,
+                        help="Path to the image")
+    parser.add_argument('--threshold', type=float, default=0.5,
+                        help="Detection confidence")
+    args = parser.parse_args()
 
-#get model
-weights = FasterRCNN_ResNet50_FPN_Weights.COCO_V1
-model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights=weights)
-model.eval()
+    # Get model
+    weights = FasterRCNN_ResNet50_FPN_Weights.COCO_V1
+    model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights=weights)
+    model.eval()
 
-#get the categories
-categories = weights.meta["categories"]
+    # Get the categories
+    categories = weights.meta["categories"]
 
-#run the detection
-input_image = load_image(args.image)
-image_tensor = F.to_tensor(input_image)
+    # Run the detection
+    input_image = load_image(args.image)
+    image_tensor = F.to_tensor(input_image)
 
-with torch.no_grad():
-    predictions = model([image_tensor])[0]
+    with torch.no_grad():
+        predictions = model([image_tensor])[0]
 
-boxes = predictions["boxes"]
-scores = predictions["scores"]
-labels = [categories[i] for i in predictions["labels"]]
+    boxes = predictions["boxes"]
+    scores = predictions["scores"]
+    labels = [categories[i] for i in predictions["labels"]]
 
-#draw bounding boxes
-image_with_boxes = draw_bounding_boxes(
-    input_image.copy(), boxes, labels, scores, args.threshold)
+    # Draw bounding boxes
+    image_with_boxes = draw_bounding_boxes(
+        input_image.copy(), boxes, labels, scores, args.threshold)
 
+    # Output result
+    output_path = "output_detected.jpg"
+    image_with_boxes.save(output_path)
+    print(f"Detection result saved to {output_path}")
+
+
+mlCLientDBLogic
 #output result
 OUTPUT_PATH = "output_detected.jpg"
 image_with_boxes.save(OUTPUT_PATH)
@@ -93,3 +101,6 @@ for i, score in enumerate(scores):
         break
 else:
     print("No detection passed the threshold.")
+if __name__ == "__main__":
+    main()
+
