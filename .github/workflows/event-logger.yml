@@ -27,8 +27,9 @@ jobs:
           python-version: "3.10"
       - name: Install dependencies
         run: |
+	  cd machine-learning-client
           python -m pip install --upgrade pip
-          pip install -r machine-learning-client/requirements.txt
+	  pip install -r requirements.txt
 	  pip install --upgrade pipenv
       - name: Log pull request opened
         if: github.event_name == 'pull_request' && github.event.action == 'opened'
