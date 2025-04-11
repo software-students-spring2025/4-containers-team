@@ -4,11 +4,16 @@ Run using:
 """
 
 
+# pylint: disable=import-error, wrong-import-position
+
 
 import sys
 import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import argparse
 from datetime import datetime
+
+
 
 import torch
 import torchvision
@@ -17,16 +22,16 @@ from torchvision.models.detection import FasterRCNN_ResNet50_FPN_Weights
 from torchvision.transforms import functional as F
 
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-
-
-
-
-
 
 
 from database.db import insert_detection
+
+
+
+
+
+
+
 
 def load_image(image_path):
     """Load image"""
