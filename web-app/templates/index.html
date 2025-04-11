@@ -1,54 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Dog Feeder Detection</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <h1>Dog Feeder</h1>
+
+  <!-- Info Button -->
+  <div id="info-button">❗</div>
+
+  <!-- Popup Overlay -->
+  <div id="info-popup" class="hidden">
+    <div class="popup-content">
+      <span id="close-popup">&times;</span>
+      <h2>🐾 What is this?</h2>
+      <p>This site detects whether there is an animal in the picture you decide to take.</p>
+      <p>If an animal is detected, it will dispense food for the animal to eat.</p>
+    </div>
+  </div>
+
   <video id="video" autoplay></video>
   <br>
-  <button id="snap">Take Picture</button>
+  <button id="snap"><span class="paw">🐾</span> Take Picture</button>
+  <div id="spinner"></div>
   <canvas id="canvas" style="display:none;"></canvas>
   <p id="result"></p>
 
   <script>
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const result = document.getElementById('result');
-    const snap = document.getElementById('snap');
+    document.addEventListener("DOMContentLoaded", function () {
+      const infoBtn = document.getElementById('info-button');
+      const popup = document.getElementById('info-popup');
+      const closePopup = document.getElementById('close-popup');
 
-    // Start webcam
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => video.srcObject = stream)
-      .catch(err => console.error("Camera error:", err));
+      if (infoBtn && popup && closePopup) {
+        infoBtn.onclick = () => popup.classList.remove('hidden');
+        closePopup.onclick = () => popup.classList.add('hidden');
+      }
 
-    snap.onclick = function () {
-      const context = canvas.getContext('2d');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const dataURL = canvas.toDataURL('image/jpeg');
+      const video = document.getElementById('video');
+      const canvas = document.getElementById('canvas');
+      const result = document.getElementById('result');
+      const snap = document.getElementById('snap');
+      const spinner = document.getElementById('spinner');
 
-      fetch('/detect', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: dataURL })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          result.innerHTML = data.is_human ? '✅ Human detected' : '❌ No human detected';
-        } else {
-          result.innerHTML = '❌ Error: ' + data.error;
-        }
-      })
-      .catch(err => {
-        result.innerHTML = '❌ Fetch failed';
-        console.error(err);
-      });
-    };
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => video.srcObject = stream)
+        .catch(err => console.error("Camera error:", err));
+
+      snap.onclick = function () {
+        const context = canvas.getContext('2d');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataURL = canvas.toDataURL('image/jpeg');
+
+        spinner.style.display = 'block';
+        result.textContent = '';
+
+        fetch('/detect', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: dataURL })
+        })
+          .then(res => res.json())
+          .then(data => {
+            spinner.style.display = 'none';
+            result.innerHTML = data.success
+              ? (data.is_human ? '✅ Human detected' : '❌ No human detected')
+              : '❌ Error: ' + data.error;
+          })
+          .catch(err => {
+            spinner.style.display = 'none';
+            result.innerHTML = '❌ Fetch failed';
+            console.error(err);
+          });
+      };
+    });
   </script>
 </body>
 </html>
