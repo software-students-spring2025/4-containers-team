@@ -3,10 +3,19 @@ Run using:
     python3 main.py --image 1.jpg
 """
 
+
+
 import sys
 import os
 import argparse
 from datetime import datetime
+
+import torch
+import torchvision
+from PIL import Image, ImageDraw
+from torchvision.models.detection import FasterRCNN_ResNet50_FPN_Weights
+from torchvision.transforms import functional as F
+
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -15,11 +24,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 
 
-import torch
-import torchvision
-from PIL import Image, ImageDraw
-from torchvision.models.detection import FasterRCNN_ResNet50_FPN_Weights
-from torchvision.transforms import functional as F
+
 
 from database.db import insert_detection
 
@@ -42,7 +47,7 @@ def draw_bounding_boxes(img, det_boxes, det_labels, det_scores, threshold=0.5):
 
 
 
-
+# pylint: disable=too-many-locals
 def main():
     """Main entry point for object detection script."""
     # Take in arguments from terminal
@@ -101,8 +106,7 @@ def main():
             inserted_id = insert_detection(detection_result)
             print(f" Inserted result into MongoDB with _id: {inserted_id}")
             break
-        else:
-            print("No detection passed the threshold.")
+        print("No detection passed the threshold.")
 
 
 
