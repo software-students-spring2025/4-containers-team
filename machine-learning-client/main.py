@@ -83,6 +83,7 @@ OUTPUT_PATH = "output_detected.jpg"
 image_with_boxes.save(OUTPUT_PATH)
 print(f"Detection result saved to {OUTPUT_PATH}")
 
+#Create Detection Object and Send to Database
 
 for i, score in enumerate(scores):
 
@@ -93,11 +94,6 @@ for i, score in enumerate(scores):
             "image": args.image,
             "result": labels[i],
             "confidence": float(score),
-            "sensor_info": {
-                "device": "webcam",
-                "location": "front_door"
-            },
-            "processing_time": 1.23 
         }
  
         inserted_id = insert_detection(detection_result)
