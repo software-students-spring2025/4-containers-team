@@ -41,6 +41,8 @@ def draw_bounding_boxes(img, det_boxes, det_labels, det_scores, threshold=0.5):
     return img
 
 
+
+
 def main():
     """Main entry point for object detection script."""
     # Take in arguments from terminal
@@ -80,29 +82,30 @@ def main():
     print(f"Detection result saved to {output_path}")
 
 
-mlCLientDBLogic
-#output result
-OUTPUT_PATH = "output_detected.jpg"
-image_with_boxes.save(OUTPUT_PATH)
-print(f"Detection result saved to {OUTPUT_PATH}")
 
-#Create Detection Object and Send to Database
 
-for i, score in enumerate(scores):
 
-    if score >= args.threshold:
+    #Create Detection Object and Send to Database
 
-        detection_result = {
-            "timestamp": datetime.utcnow(),
-            "image": args.image,
-            "result": labels[i],
-            "confidence": float(score),
-        }
- 
-        inserted_id = insert_detection(detection_result)
-        print(f" Inserted result into MongoDB with _id: {inserted_id}")
-        break
-else:
-    print("No detection passed the threshold.")
+    for i, score in enumerate(scores):
+
+        if score >= args.threshold:
+
+            detection_result = {
+                "timestamp": datetime.utcnow(),
+                "image": args.image,
+                "result": labels[i],
+                "confidence": float(score),
+            }
+
+            inserted_id = insert_detection(detection_result)
+            print(f" Inserted result into MongoDB with _id: {inserted_id}")
+            break
+        else:
+            print("No detection passed the threshold.")
+
+
+
+
 if __name__ == "__main__":
     main()
