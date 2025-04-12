@@ -18,6 +18,16 @@ This app uses image recognition to detect the presence of a human in a photo. Wh
 
 ## instructions for how to configure and run all parts of project on any platform
 
+
+
 ## instructions for how to set up any environment variables and import any starter data into the database, as necessary, for the system to operate correctly when run.
 
+
+
 ## if there are any "secret" configuration files, such as .env or similar files, that are not included in the version control repository, examples of these files, such as env.example, with dummy data must be included in the repository and exact instructions for how to create the proper configuration files and what their contents should be must be supplied to the course admins by the due date.
+
+
+
+
+
+
