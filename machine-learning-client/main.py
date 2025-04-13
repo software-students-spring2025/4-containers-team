@@ -92,24 +92,6 @@ def main():
     print(f"Detection result saved to {output_path}")
 
 
-    #Create Detection Object and Send to Database
-
-    for i, score in enumerate(scores):
-
-        if score >= args.threshold:
-
-            detection_result = {
-                "timestamp": datetime.utcnow(),
-                "image": args.image,
-                "result": labels[i],
-                "confidence": float(score),
-            }
-
-            inserted_id = insert_detection(detection_result)
-            print(f" Inserted result into MongoDB with _id: {inserted_id}")
-            break
-        print("No detection passed the threshold.")
-
 
 if __name__ == "__main__":
     main()

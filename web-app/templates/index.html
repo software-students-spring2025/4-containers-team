@@ -67,13 +67,19 @@
           .then(res => res.json())
           .then(data => {
             spinner.style.display = 'none';
-            result.innerHTML = data.success
-
-              ? (data.is_dog ? '✅ Dog detected' : '❌ No dogs detected')
-
-              ? (data.is_human ? '✅ Human detected' : '❌ No human detected')
-
-              : '❌ Error: ' + data.error;
+            fetch('/latest')
+              .then(res => res.json())
+              .then(latest => {
+            if (latest.is_dog) {
+              result.innerHTML = "✅ You are a dog! Dispensing food.";
+            } else {
+              result.innerHTML = `❌ You are not a dog! You are a ${latest.label}. No food for you!`;
+            }
+          })
+          .catch(err => {
+            result.innerHTML = "❌ Failed to fetch latest detection.";
+            console.error(err);
+          });
           })
           .catch(err => {
             spinner.style.display = 'none';

@@ -56,6 +56,22 @@ def detect():
 
     except Exception as e:
         return jsonify({"success": False, "error": str(e)})
+    
+
+@app.route("/latest", methods=["GET"])
+def latest_detection():
+    try:
+        detection = collection.find_one(sort=[("timestamp", -1)])
+        if detection:
+            return jsonify({
+                "label": detection.get("label"),
+                "is_dog": detection.get("is_dog", False)
+            })
+        else:
+            return jsonify({"error": "No detection found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 
 if __name__ == "__main__":
