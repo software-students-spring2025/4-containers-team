@@ -1,9 +1,0 @@
-# database/requirements.txt
-
-
-
-# PyMongo is the official MongoDB driver for Python.
-pymongo>=3.12.0,<4.0.0
-
-
-
