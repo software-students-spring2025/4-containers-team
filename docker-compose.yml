@@ -1,12 +1,52 @@
 version: "3.9"
+
 services:
   mongodb:
     image: mongo:6.0
-    container_name: mongo
+    container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    networks:
+      - app-network
+
+  machine-learning-client:
+    build:
+      context: ./machine-learning-client
+      dockerfile: Dockerfile
+    container_name: ml-client
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./machine-learning-client:/app
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/
+    networks:
+      - app-network
+    depends_on:
+      - mongodb
+
+
+  web-app:
+    build:
+      context: ./web-app
+      dockerfile: Dockerfile
+    container_name: web-app
+    ports:
+      - "5005:5000"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/
+      - ML_API_URL=http://machine-learning-client:5001/detect
+    networks:
+      - app-network
+    depends_on:
+      - mongodb
+      - machine-learning-client
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   mongo-data:

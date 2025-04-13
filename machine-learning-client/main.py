@@ -92,9 +92,6 @@ def main():
     print(f"Detection result saved to {output_path}")
 
 
-
-
-
     #Create Detection Object and Send to Database
 
     for i, score in enumerate(scores):
@@ -112,8 +109,6 @@ def main():
             print(f" Inserted result into MongoDB with _id: {inserted_id}")
             break
         print("No detection passed the threshold.")
-
-
 
 
 if __name__ == "__main__":
