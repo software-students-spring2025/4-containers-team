@@ -68,7 +68,11 @@
           .then(data => {
             spinner.style.display = 'none';
             result.innerHTML = data.success
+
               ? (data.is_dog ? '✅ Dog detected' : '❌ No dogs detected')
+
+              ? (data.is_human ? '✅ Human detected' : '❌ No human detected')
+
               : '❌ Error: ' + data.error;
           })
           .catch(err => {
