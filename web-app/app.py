@@ -1,56 +1,62 @@
 import base64
-import io
 import os
+import requests
 from datetime import datetime
 from flask import Flask, request, render_template, jsonify
 from pymongo import MongoClient
-from PIL import Image
-import numpy as np
-
-# Later we'll import detect_human from ml_utils
-# from ml_utils import detect_human
 
 app = Flask(__name__)
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://mongodb:27017/")
+# Get environment variables with defaults
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
+ML_API_URL = os.getenv("ML_API_URL", "http://localhost:5001/detect")
+
+# MongoDB connection
 client = MongoClient(MONGO_URI)
-db = client["dog_feeder"]
+db = client["feeder_db"]
 collection = db["detections"]
 
-def dummy_detect_human(image):
-    # Simulated detection: just say "yes" half the time
-    import random
-    return random.choice([True, False]), "person", 0.92
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
+
 @app.route("/detect", methods=["POST"])
 def detect():
     try:
+        # Get image from request
         data_url = request.json["image"]
         header, encoded = data_url.split(",", 1)
-        image_data = base64.b64decode(encoded)
-        image = Image.open(io.BytesIO(image_data)).convert("RGB")
 
-        # Convert PIL to NumPy array (no OpenCV)
-        frame = np.array(image)  # stays in RGB
+        # Call the ML API using the environment variable
+        response = requests.post(
+            ML_API_URL,  # This uses the ML_API_URL from environment
+            json={"image": data_url},
+            timeout=30  # Add timeout to prevent hanging requests
+        )
 
-        # Call the dummy model (replace with real YOLO later)
-        is_human, label, confidence = dummy_detect_human(frame)
+        if response.status_code != 200:
+            return jsonify({"success": False, "error": f"ML API error: {response.text}"})
 
-        # Save image and detection result to MongoDB
-        image_base64 = encoded
-        result = {
-            "label": label,
-            "confidence": confidence,
-            "is_human": is_human,
+        result = response.json()
+
+        # Save results to MongoDB
+        detection = {
+            "label": result.get("label"),
+            "confidence": result.get("confidence"),
+            "is_dog": (result.get("label") or "").lower() == "dog",
             "timestamp": datetime.utcnow(),
-            "image": image_base64,
+            "image": encoded[:100] + "...",
         }
-        collection.insert_one(result)
 
-        return jsonify({"success": True, "is_human": is_human})
+        collection.insert_one(detection)
+
+        return jsonify({"success": True, "is_dog": detection.get("is_dog", False)})
+
     except Exception as e:
         return jsonify({"success": False, "error": str(e)})
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
